@@ -1,104 +1,64 @@
-export const homePageHtml = () => `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Utilities</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-    :root {
-      --bg: #f6f4ef;
-      --ink: #1c1c1c;
-      --muted: #5a5a5a;
-      --card: #ffffff;
-      --accent: #0b7a3b;
-      --border: #e4e1da;
-      --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      --radius: 16px;
-      --sans: "Space Grotesk", "Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: var(--sans);
-      color: var(--ink);
-      background: radial-gradient(circle at top, #ffffff 0%, #f0eee7 45%, #e9e6df 100%);
-      min-height: 100vh;
-      padding: 40px 20px 80px;
-    }
-    .shell {
-      max-width: 1100px;
-      margin: 0 auto;
+import { icon, page } from "./layout";
+
+const tools = [
+  { href: "/wa-me-creator", icon: "chat", name: "WhatsApp link", description: "Generate wa.me links with a prefilled message." },
+  { href: "/instagram-image-extractor", icon: "image", name: "Instagram images", description: "Download every photo from a public post." },
+];
+
+export const homePageHtml = () => page({
+  title: "Utilities",
+  styles: `
+    .tools {
       display: grid;
-      gap: 28px;
-    }
-    header {
-      display: grid;
-      gap: 10px;
-    }
-    h1 {
-      margin: 0;
-      font-size: clamp(2.4rem, 4vw, 3.4rem);
-      letter-spacing: -0.02em;
-    }
-    p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-    .grid {
-      display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .card {
-      display: grid;
-      gap: 12px;
-      padding: 20px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
-      text-decoration: none;
+    }
+    .tool {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 16px 18px;
       color: inherit;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      transition: background 0.15s;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    .tool + .tool { border-top: 1px solid var(--line); }
+    .tool:hover { background: var(--surface-2); }
+    .tool-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
     }
-    .card h2 {
-      margin: 0;
-      font-size: 1.4rem;
-    }
-    .card span {
-      color: var(--muted);
-    }
-    @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-    @media (max-width: 640px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <header>
+    .tool-icon svg { width: 18px; height: 18px; }
+    .tool-text { display: grid; gap: 2px; min-width: 0; }
+    .tool-name { font-weight: 500; }
+    .tool-desc { font-size: 14px; color: var(--muted); }
+    .tool-arrow { width: 16px; height: 16px; color: var(--faint); transition: transform 0.15s, color 0.15s; }
+    .tool-arrow svg { width: 16px; height: 16px; display: block; }
+    .tool:hover .tool-arrow { transform: translateX(3px); color: var(--ink); }`,
+  body: `
+    <header class="intro">
       <h1>Utilities</h1>
-      <p>Small tools for friends and family. More coming soon.</p>
+      <p class="lede">Small tools for friends and family. More coming soon.</p>
     </header>
 
-    <section class="grid">
-      <a class="card" href="/wa-me-creator">
-        <h2>WA.me Creator</h2>
-        <span>Generate WhatsApp links fast.</span>
-      </a>
-    </section>
-  </div>
-</body>
-</html>`;
+    <nav class="tools" aria-label="Tools">${tools.map((tool) => `
+      <a class="tool" href="${tool.href}">
+        <span class="tool-icon">${icon(tool.icon)}</span>
+        <span class="tool-text">
+          <span class="tool-name">${tool.name}</span>
+          <span class="tool-desc">${tool.description}</span>
+        </span>
+        <span class="tool-arrow">${icon("arrow")}</span>
+      </a>`).join("")}
+    </nav>`,
+});

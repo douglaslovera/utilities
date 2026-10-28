@@ -1,213 +1,87 @@
-export const waMeCreatorHtml = () => `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WA.me Link Generator</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-    :root {
-      --bg: #f7f7f2;
-      --ink: #1c1c1c;
-      --muted: #5a5a5a;
-      --card: #ffffff;
-      --accent: #0b7a3b;
-      --accent-strong: #0a6a33;
-      --border: #e3e3dd;
-      --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-      --radius: 14px;
-      --mono: "SFMono-Regular", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: "Space Grotesk", "Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: var(--sans);
-      color: var(--ink);
-      background: radial-gradient(circle at top, #ffffff 0%, #f1f1eb 45%, #ebeae4 100%);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 32px 16px 64px;
-      position: relative;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: -20% 10% auto auto;
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(11, 122, 59, 0.18), rgba(11, 122, 59, 0));
+import { icon, page } from "../layout";
+
+export const waMeCreatorHtml = () => page({
+  title: "WhatsApp Link Generator",
+  crumb: "WhatsApp link",
+  styles: `
+    fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+    legend { padding: 0; margin-bottom: 8px; }
+    .phone { display: grid; gap: 8px; grid-template-columns: 96px minmax(0, 1fr); }
+    .prefixed { position: relative; }
+    .prefixed::before {
+      content: "+";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--faint);
       pointer-events: none;
-      z-index: 0;
     }
-    .shell {
-      width: min(900px, 100%);
+    .prefixed input { padding-left: 24px; }
+    .result {
       display: grid;
-      gap: 24px;
-      position: relative;
-      z-index: 1;
-    }
-    header {
-      display: grid;
-      gap: 12px;
-    }
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 3.8vw, 3rem);
-      letter-spacing: -0.02em;
-    }
-    p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(4px);
-      display: grid;
-      gap: 18px;
-    }
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 8px;
-    }
-    input, textarea {
-      width: 100%;
-      font: inherit;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #fafaf7;
-      color: var(--ink);
-    }
-    textarea { min-height: 110px; resize: vertical; }
-    .row {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      align-items: start;
-    }
-    .phone-group {
-      display: grid;
-      gap: 10px;
-    }
-    .phone-inputs {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: minmax(90px, 120px) minmax(160px, 1fr);
-    }
-    .sub-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: block;
-    }
-    .helper {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 6px;
+      gap: 14px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
     }
     .output {
-      padding: 14px;
-      border-radius: 10px;
-      background: #0d0d0d;
-      color: #e6e6e6;
+      min-height: 46px;
+      padding: 12px 14px;
       font-family: var(--mono);
-      font-size: 0.92rem;
+      font-size: 13px;
+      line-height: 1.6;
       overflow-wrap: anywhere;
-      min-height: 56px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
     }
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    button {
-      font: inherit;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .copy {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(11, 122, 59, 0.25);
-    }
-    .copy:hover { background: var(--accent-strong); }
-    .open {
-      background: #f3f3ef;
-      color: var(--ink);
-      border: 1px solid var(--border);
-    }
-    .status {
-      font-size: 0.95rem;
-      color: var(--muted);
-      min-height: 20px;
-    }
-    .error { color: #c62828; }
-    .back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <header>
-      <a class="back" href="/">← Back to utilities</a>
-      <h1>WhatsApp wa.me Link Generator</h1>
-      <p>Enter the country/area code, phone number, and message. We will generate a wa.me link you can open or copy.</p>
+    .output:empty::before { content: "Your link will appear here"; color: var(--faint); }
+    .actions { display: flex; gap: 8px 12px; flex-wrap: wrap; align-items: center; }
+    .actions .status { min-height: 0; }
+    @media (max-width: 560px) {
+      .actions .btn { flex: 1; }
+      .actions .status { flex-basis: 100%; }
+    }`,
+  body: `
+    <header class="intro">
+      <h1>WhatsApp link generator</h1>
+      <p class="lede">Enter a phone number and a message to get a wa.me link you can share or open.</p>
     </header>
 
-    <section class="card">
-      <div class="row">
-        <div class="phone-group">
-          <label>Phone number</label>
-          <div class="phone-inputs">
-            <div>
-              <label class="sub-label" for="area">Code</label>
-              <input id="area" type="tel" inputmode="numeric" autocomplete="tel-country-code" placeholder="1" />
-            </div>
-            <div>
-              <label class="sub-label" for="phone">Number</label>
-              <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="555 123 4567" />
-            </div>
+    <section class="panel">
+      <fieldset class="field">
+        <legend class="label">Phone number</legend>
+        <div class="phone">
+          <div class="prefixed">
+            <label class="visually-hidden" for="area">Country code</label>
+            <input id="area" type="tel" inputmode="numeric" autocomplete="tel-country-code" placeholder="1" />
           </div>
-          <div class="helper">Saved on this device for quick reuse. Edit anytime.</div>
+          <div>
+            <label class="visually-hidden" for="phone">Number</label>
+            <input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="555 123 4567" />
+          </div>
         </div>
-        <div>
-          <label for="message">Message</label>
-          <textarea id="message" placeholder="I'm interested in your car for sale"></textarea>
-          <div class="helper">This message is not stored.</div>
-        </div>
+        <div class="hint">Country code, then the number. Saved on this device for next time.</div>
+      </fieldset>
+
+      <div class="field">
+        <label class="label" for="message">Message</label>
+        <textarea id="message" placeholder="Hi! I'm interested in your car for sale."></textarea>
+        <div class="hint">Messages are never stored.</div>
       </div>
 
-      <div>
-        <label>Generated link</label>
-        <div class="output" id="output"></div>
+      <div class="result">
+        <div class="field">
+          <span class="label">Link</span>
+          <div class="output" id="output"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="copy" type="button">${icon("copy")}Copy link</button>
+          <button class="btn btn-secondary" id="open" type="button">${icon("external")}Open in WhatsApp</button>
+          <div class="status" id="status" role="status" aria-live="polite"></div>
+        </div>
       </div>
-
-      <div class="actions">
-        <button class="copy" id="copy">Copy link 📋</button>
-        <button class="open" id="open" type="button">Open in WhatsApp ↗️</button>
-      </div>
-      <div class="status" id="status"></div>
     </section>
-  </div>
 
   <script>
     const areaInput = document.getElementById('area');
@@ -221,7 +95,7 @@ export const waMeCreatorHtml = () => `<!doctype html>
     const STORAGE_AREA_KEY = 'wa_me_area';
     const STORAGE_PHONE_KEY = 'wa_me_phone';
 
-    const sanitizePhone = (value) => value.replace(/\D/g, '');
+    const sanitizePhone = (value) => value.replace(/\\D/g, '');
 
     const normalizePhone = (area, number) => {
       const areaDigits = sanitizePhone(area);
@@ -291,7 +165,7 @@ export const waMeCreatorHtml = () => `<!doctype html>
     copyBtn.addEventListener('click', async () => {
       const link = updateLink();
       if (!link) {
-        statusEl.textContent = 'Add country/area code, phone number, and message before copying.';
+        statusEl.textContent = 'Add a country code, phone number, and message before copying.';
         statusEl.classList.add('error');
         return;
       }
@@ -299,7 +173,7 @@ export const waMeCreatorHtml = () => `<!doctype html>
         await navigator.clipboard.writeText(link);
         statusEl.textContent = 'Copied to clipboard.';
       } catch (err) {
-        statusEl.textContent = 'Copy failed. You can manually copy the link above.';
+        statusEl.textContent = 'Copy failed. You can copy the link above manually.';
         statusEl.classList.add('error');
       }
     });
@@ -307,7 +181,7 @@ export const waMeCreatorHtml = () => `<!doctype html>
     openBtn.addEventListener('click', () => {
       const link = updateLink();
       if (!link) {
-        statusEl.textContent = 'Add country/area code, phone number, and message before opening.';
+        statusEl.textContent = 'Add a country code, phone number, and message before opening.';
         statusEl.classList.add('error');
         return;
       }
@@ -316,6 +190,5 @@ export const waMeCreatorHtml = () => `<!doctype html>
 
     loadPhone();
     updateLink();
-  </script>
-</body>
-</html>`;
+  </script>`,
+});
